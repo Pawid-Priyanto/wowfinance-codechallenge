@@ -113,7 +113,7 @@ export default function LoginScreen({ navigation }: any) {
             <View style={styles.inputWrapper}>
               <TextInput
                 style={styles.textInput}
-                placeholder="ash@pallettown.com"
+                placeholder="user@gmail.com"
                 placeholderTextColor="#95a5a6"
                 keyboardType="email-address"
                 autoCapitalize="none"
