@@ -1,87 +1,86 @@
-# 📱 Pokemon Explorer - React Native Coding Challenge
+# 📱 Pokémon Explorer
+
+> **React Native Mobile App Assessment** > Aplikasi penjelajah Pokémon yang dibangun dengan **React Native CLI (Bare Workflow)**. Project ini mendemonstrasikan implementasi autentikasi (Mock JWT), integrasi REST API, dan manajemen sesi otomatis.
+
+---
+
+## 🔐 Test Credentials (Dummy User)
+Gunakan akun di bawah ini untuk menguji fitur Login:
+
+| Field | Value |
+| :--- | :--- |
+| **Email** | `pawitanto27@gmail.com` |
+| **Password** | `Password123!` |
 
 
 
-A React Native mobile application built with the Bare Workflow (React Native CLI). This project demonstrates the implementation of authentication (Mock JWT), REST API integration using PokeAPI, list virtualization, and reusable components.## ✨ Features- **Authentication (Login Screen):**  - Form validation for email and password.  - Secure mock JWT generation and storage using `AsyncStorage`.- **Home Screen:**  - Displays the logged-in user's email.  - Fetches and displays a list of Pokemon from [PokeAPI](https://pokeapi.co/).  - Highly optimized list rendering using `FlatList`.  - Implements Pull-to-Refresh, loading states, and empty states.- **Detail Screen:**  - Displays detailed information about the selected Pokemon.  - Implements the DRY (Don't Repeat Yourself) principle by utilizing a **Reusable Component** (`PokemonCard`) at the top of the screen.## 🛠 Tech Stack- **Framework:** React Native CLI - *Bare Workflow*- **Navigation:** React Navigation (Native Stack)- **HTTP Client:** Axios- **Local Storage:** AsyncStorage- **API:** PokeAPI (Public REST API)## 📂 Project Architecture
+---
 
+## ✨ Fitur Utama
+- **Mock JWT Authentication:** Simulasi pembuatan token Base64 dan penyimpanan sesi menggunakan `AsyncStorage`.
+- **PokéAPI Integration:** Mengambil dan menampilkan daftar Pokémon secara real-time dari REST API.
+- **Global Session Guard:** Pengecekan validitas token secara otomatis di level root aplikasi (App.tsx).
+- **Auto-Logout System:** Aplikasi otomatis mendeteksi token expired dan mengarahkan user kembali ke halaman Login.
+- **Theme Support:** Manajemen tema (Light/Dark) yang terintegrasi melalui Context API.
 
+---
 
-This project follows a feature-based folder structure inside the `src` directory for better readability and scalability:```text
+## 🛠 Tech Stack
+* **Framework:** React Native CLI (v0.7x)
+* **Navigation:** React Navigation (Native Stack)
+* **Networking:** Axios
+* **Storage:** AsyncStorage
+* **Context:** ThemeContext API
 
+---
+
+## 📂 Project Architecture
+Struktur folder yang digunakan dalam project ini:
+
+```text
 src/
+ ┣ components/     # UI Elements (PokemonCard)
+ ┣ context/        # Global State (ThemeContext)
+ ┣ screens/        # Main Screens (Splash, Login, Home, Detail)
+ ┗ App.tsx         # Root Entry Point, Navigation & Session Logic
+```
+ ### 🚀 Instalasi & Menjalankan App
 
- ┣ components/     # Reusable UI elements (e.g., PokemonCard)
+#### 1. Setup
+Clone repository dan install dependencies:
 
- ┣ screens/        # Main application screens (Login, Home, Detail)
-
- ┣ navigation/     # App routing and stack navigators
-
- ┣ services/       # API configuration and Axios instances
-
- ┗ App.js          # Entry point of the application
-
-🚀 Getting Started
-
-Installation
-
-Clone the repository:
-
-Bash
-
-
-
-git clone <your-github-repo-url>cd PokemonApp
-
-Install JavaScript dependencies:
-
-Bash
-
-
-
+```bash
+git clone <your-repo-url>
+cd PokemonApp
 npm install
+```
 
-Install iOS dependencies (Mac only):
-
-Bash
-
-
-
-cd ios && pod install && cd ..
-
-Running the Application
-
-Step 1: Start the Metro Bundler
-
-Bash
-
-
-
+#### 2. Jalankan di Emulator
+```bash
+# Terminal 1
 npm start
 
-Step 2: Start the App on Emulator/Device
+# Terminal 2
+npx react-native run-android  # Untuk Android
+npx react-native run-ios      # Untuk iOS (Mac only)
+```
 
-For Android:
+#### 3. Build APK (Release)
+Untuk mendapatkan file instalasi Android:
 
-Bash
+```bash
+cd android
+./gradlew assembleRelease
+```
+*Lokasi file:* `android/app/build/outputs/apk/release/app-release.apk`
 
+---
 
+### 📝 Catatan Implementasi (Key Highlights)
 
-npm run android
+* **Security Logic:** Menggunakan `Buffer` untuk melakukan decode payload JWT (Base64) secara aman guna memvalidasi waktu kadaluarsa (`exp`).
+* **DRY Principle:** Implementasi komponen `PokemonCard` yang *reusable* untuk efisiensi kode pada halaman Home dan Detail.
+* **Performance:** Optimasi `FlatList` dengan *loading states* dan *pull-to-refresh* untuk memberikan pengalaman pengguna yang mulus saat memuat data dari API.
 
-For iOS:
-
-Bash
-
-
-
-npm run ios
-
-📝 Key Implementations & Best Practices
-
-Performance Optimization: Used React.memo and useCallback on the reusable components and FlatList renderers to prevent unnecessary re-renders.
-
-Error Handling: Wrapped API calls inside try-catch blocks and handled edge cases such as network failures and empty data responses.
-
-Security: Stored authentication tokens securely in local storage rather than keeping them in temporary state.
-
-Built for Mobile Developer Coding Assessment.
+---
+Built with ⚡️ for **Mobile Developer Assessment**.
