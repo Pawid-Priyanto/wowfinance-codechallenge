@@ -43,14 +43,16 @@ export default function HomeScreen({ navigation }: any) {
   }, []);
 
   // --- FUNGSI FETCH PERTAMA & REFRESH ---
-  const fetchInitialPokemons = async () => {
-    setErrorMsg('');
+ const fetchInitialPokemons = async () => {
+    setLoading(true);
+    setErrorMsg(''); 
     try {
       const response = await axios.get('https://pokeapi.co/api/v2/pokemon?limit=50');
       setPokemons(response.data.results);
-      setNextUrl(response.data.next); // Simpan URL halaman berikutnya
-    } catch (error) {
-      setErrorMsg('Gagal mengambil data Pokemon.');
+      setNextUrl(response.data.next);
+    } catch (error: any) {
+      console.log('Error Initial Fetch:', error.message);
+      setErrorMsg('Yah, Gagal mengambil data Pokemon. Silakan periksa koneksi internetmu.');
     } finally {
       setLoading(false);
       setRefreshing(false);
