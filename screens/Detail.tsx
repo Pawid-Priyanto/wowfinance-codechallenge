@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import PokemonCard from '../component/PokemonCard';
-import { useTheme } from '../context/ThemeContext'; // Pastikan path benar
+import { useTheme } from '../context/ThemeContext';
 
 interface PokemonDetail {
   height: number;
@@ -74,8 +74,6 @@ export default function DetailScreen({ route, navigation }: any) {
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.content}>
-        
-        {/* PokemonCard sudah otomatis dark mode di dalamnya */}
         <PokemonCard 
           pokemon={{ 
             name: pokemonName, 

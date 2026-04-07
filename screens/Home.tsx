@@ -14,7 +14,6 @@ import axios from 'axios';
 import PokemonCard from '../component/PokemonCard';
 import { useTheme } from '../context/ThemeContext';
 
-// Interface TypeScript
 interface Pokemon {
   name: string;
   url: string;

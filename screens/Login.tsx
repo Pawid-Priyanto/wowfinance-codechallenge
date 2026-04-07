@@ -13,6 +13,7 @@ import {
   ScrollView
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Buffer } from 'buffer';
 
 export default function LoginScreen({ navigation }: any) {
   const [email, setEmail] = useState('');
@@ -68,8 +69,19 @@ export default function LoginScreen({ navigation }: any) {
         }
 
         const header = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
-        const payloadObj = { email: email, exp: Date.now() + (60 * 60 * 1000) };
-        const mockJwtToken = `${header}.${JSON.stringify(payloadObj)}.S1gnatur3M0ckR4nd0m`;
+        const nowInSeconds = Math.floor(Date.now() / 1000);
+      
+        const expTime = nowInSeconds + (60*60); 
+
+        const payloadObj = { 
+        email: email, 
+        exp: expTime 
+        };
+
+        const jsonString = JSON.stringify(payloadObj);
+       const base64Payload = Buffer.from(jsonString).toString('base64');
+        const mockJwtToken = `${header}.${base64Payload}.S1gnatur3M0ckR4nd0m`;
+
 
         await AsyncStorage.setItem('@user_token', mockJwtToken);
         await AsyncStorage.setItem('@user_email', email);
