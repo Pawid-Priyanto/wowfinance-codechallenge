@@ -1,45 +1,41 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React from "react";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import LoginScreen from "./screens/Login"
+import HomeScreen from "./screens/Home"
+import DetailScreen from "./screens/Detail"
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+const Stack = createNativeStackNavigator();
 
-  return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
-    </SafeAreaProvider>
-  );
-}
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
+const App = () => (
+  <NavigationContainer>
+    <Stack.Navigator initialRouteName="Login">
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{headerShown: false}}
       />
-    </View>
-  );
-}
+      {/* Halaman Home: Kita matikan tombol 'Back' bawaan supaya user nggak bisa balik ke Login pakai gesture */}
+        <Stack.Screen 
+          name="Home" 
+          component={HomeScreen} 
+          options={{ 
+            title: 'Pokemon Explorer',
+            headerBackVisible: false,
+            headerTitleAlign: 'center'
+          }} 
+        />
+        
+        {/* Halaman Detail */}
+        <Stack.Screen 
+          name="Detail" 
+          component={DetailScreen} 
+          options={{ title: 'Pokemon Detail' }} 
+        />
+    </Stack.Navigator> 
+  </NavigationContainer>
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+)
 
 export default App;
