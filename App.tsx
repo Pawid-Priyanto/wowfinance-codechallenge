@@ -1,7 +1,7 @@
 import React from "react";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import { ThemeProvider } from './context/ThemeContext';
 import LoginScreen from "./screens/Login"
 import HomeScreen from "./screens/Home"
 import DetailScreen from "./screens/Detail"
@@ -10,6 +10,7 @@ import SplashScreen from "./screens/Splash"
 const Stack = createNativeStackNavigator();
 
 const App = () => (
+  <ThemeProvider>
   <NavigationContainer>
     <Stack.Navigator initialRouteName="Splash">
       <Stack.Screen
@@ -41,6 +42,7 @@ const App = () => (
         />
     </Stack.Navigator> 
   </NavigationContainer>
+  </ThemeProvider>
 
 )
 

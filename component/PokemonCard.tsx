@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { useTheme } from '../context/ThemeContext';
 
 const PokemonCard = ({ pokemon, onPress }: any) => {
   // PokeAPI list hanya mengembalikan 'name' dan 'url'.
@@ -7,23 +8,20 @@ const PokemonCard = ({ pokemon, onPress }: any) => {
   // Contoh URL: "https://pokeapi.co/api/v2/pokemon/1/" -> ID-nya adalah 1
   const pokemonId = pokemon.url.split('/')[6];
   const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId}.png`;
+  const {theme} = useTheme()
 
   return (
-    <TouchableOpacity 
-      style={styles.card} 
+   <TouchableOpacity 
+      style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]} 
       onPress={() => onPress(pokemon, pokemonId, imageUrl)}
       activeOpacity={0.7}
     >
-      <View style={styles.imageContainer}>
-        <Image 
-          source={{ uri: imageUrl }} 
-          style={styles.image} 
-          resizeMode="contain"
-        />
+      <View style={[styles.imageContainer, { backgroundColor: theme.background }]}>
+        <Image source={{ uri: imageUrl }} style={styles.image} resizeMode="contain" />
       </View>
       <View style={styles.infoContainer}>
-        <Text style={styles.idText}>#{pokemonId.padStart(3, '0')}</Text>
-        <Text style={styles.nameText}>{pokemon.name}</Text>
+        <Text style={[styles.idText, { color: theme.subText }]}>#{pokemonId.padStart(3, '0')}</Text>
+        <Text style={[styles.nameText, { color: theme.text }]}>{pokemon.name}</Text>
       </View>
     </TouchableOpacity>
   );

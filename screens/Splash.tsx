@@ -1,13 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTheme } from '../context/ThemeContext'; // Import hook tema
 
 export default function SplashScreen({ navigation }: any) {
+  const { theme, isDarkMode } = useTheme(); // Ambil data tema
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.5)).current;
 
   useEffect(() => {
-    // Menjalankan animasi fade dan scale secara bersamaan
+    // Jalankan animasi
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -21,12 +23,10 @@ export default function SplashScreen({ navigation }: any) {
       }),
     ]).start();
 
-    // Pengecekan status login
     const checkAuth = async () => {
       try {
         const token = await AsyncStorage.getItem('@user_token');
         
-        // Memberikan jeda 2.5 detik agar animasi splash screen terlihat
         setTimeout(() => {
           if (token) {
             navigation.replace('Home');
@@ -35,7 +35,6 @@ export default function SplashScreen({ navigation }: any) {
           }
         }, 2500);
       } catch (error) {
-        // Jika terjadi error, fallback ke halaman login
         setTimeout(() => {
           navigation.replace('Login');
         }, 2500);
@@ -46,23 +45,40 @@ export default function SplashScreen({ navigation }: any) {
   }, [fadeAnim, scaleAnim, navigation]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Animated.View 
         style={[
           styles.content, 
           { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }
         ]}
       >
-        {/* Desain Pokeball menggunakan View bawaan */}
-        <View style={styles.pokeball}>
+        {/* Desain Pokeball Dinamis */}
+        <View style={[
+          styles.pokeball, 
+          { 
+            backgroundColor: isDarkMode ? '#1E1E1E' : '#FFFFFF',
+            borderColor: isDarkMode ? '#E1E8ED' : '#2C3E50',
+            shadowColor: isDarkMode ? '#000' : '#2C3E50'
+          }
+        ]}>
           <View style={styles.pokeballTop} />
-          <View style={styles.pokeballBottom} />
-          <View style={styles.pokeballLine} />
-          <View style={styles.pokeballButton} />
+          <View style={[styles.pokeballBottom, { backgroundColor: isDarkMode ? '#1E1E1E' : '#FFFFFF' }]} />
+          <View style={[styles.pokeballLine, { backgroundColor: isDarkMode ? '#E1E8ED' : '#2C3E50' }]} />
+          <View style={[
+            styles.pokeballButton, 
+            { 
+              backgroundColor: isDarkMode ? '#1E1E1E' : '#FFFFFF',
+              borderColor: isDarkMode ? '#E1E8ED' : '#2C3E50' 
+            }
+          ]} />
         </View>
 
-        <Text style={styles.title}>Pokédex</Text>
-        <Text style={styles.subtitle}>Gotta catch 'em all! ⚡️</Text>
+        <Text style={[styles.title, { textShadowColor: isDarkMode ? '#FFCB05' : 'rgba(255, 203, 5, 0.5)' }]}>
+          Pokédex
+        </Text>
+        <Text style={[styles.subtitle, { color: theme.subText }]}>
+          Gotta catch 'em all! ⚡️
+        </Text>
       </Animated.View>
     </View>
   );
@@ -71,27 +87,22 @@ export default function SplashScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F5F7',
     justifyContent: 'center',
     alignItems: 'center',
   },
   content: {
     alignItems: 'center',
   },
-  // --- Styling Pokeball ---
   pokeball: {
     width: 120,
     height: 120,
     borderRadius: 60,
     borderWidth: 6,
-    borderColor: '#2C3E50',
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 24,
-    backgroundColor: '#FFFFFF',
     elevation: 8,
-    shadowColor: '#2C3E50',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.2,
     shadowRadius: 15,
@@ -108,37 +119,31 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     height: '50%',
-    backgroundColor: '#FFFFFF',
   },
   pokeballLine: {
     position: 'absolute',
     width: '100%',
     height: 6,
-    backgroundColor: '#2C3E50',
   },
   pokeballButton: {
     position: 'absolute',
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#FFFFFF',
     borderWidth: 6,
-    borderColor: '#2C3E50',
+    zIndex: 10,
   },
-  // --- Styling Text ---
   title: {
     fontSize: 42,
     fontWeight: '900',
     color: '#2A75BB', 
     letterSpacing: 2,
     marginBottom: 8,
-    textShadowColor: '#FFCB05', 
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
   },
   subtitle: {
     fontSize: 16,
-    color: '#7F8C8D',
     fontWeight: '600',
     letterSpacing: 1,
   },

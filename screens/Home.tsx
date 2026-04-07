@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -12,6 +12,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import PokemonCard from '../component/PokemonCard';
+import { useTheme } from '../context/ThemeContext';
 
 // Interface TypeScript
 interface Pokemon {
@@ -25,6 +26,7 @@ export default function HomeScreen({ navigation }: any) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const { isDarkMode, toggleTheme, theme } = useTheme();
   
   // --- STATE BARU UNTUK INFINITE SCROLL ---
   const [nextUrl, setNextUrl] = useState<string | null>(null);
@@ -114,38 +116,61 @@ export default function HomeScreen({ navigation }: any) {
     if (!isLoadingMore) return null;
     return (
       <View style={styles.footerLoader}>
-        <ActivityIndicator size="large" color="#FFCB05" />
+        <ActivityIndicator size="large"color={theme.primary} />
       </View>
     );
   };
 
+  const logoutBtnStyle = [
+  styles.logoutBtn, 
+  { 
+    backgroundColor: isDarkMode ? '#331a1a' : '#FDEDEC', 
+    borderColor: isDarkMode ? '#662222' : '#E74C3C' 
+  }
+];
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+        headerStyle: { backgroundColor: theme.card, elevation: 0, shadowOpacity: 0 },
+        headerTintColor: theme.text,
+        headerTitleStyle: { fontWeight: '800' },
+        });
+    }, [navigation, theme]);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <View style={[styles.header, { backgroundColor: theme.card, borderBottomColor: theme.border }]}>
         <View>
-          <Text style={styles.greeting}>Hello, Trainer!</Text>
-          <Text style={styles.emailText}>{email}</Text>
+          <Text style={[styles.greeting, { color: theme.subText }]}>Hello, Trainer!</Text>
+          <Text style={[styles.emailText, { color: theme.primary }]}>{email}</Text>
         </View>
-        <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
-          <Text style={styles.logoutText}>Logout</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          {/* Tombol Dark Mode */}
+          <TouchableOpacity onPress={toggleTheme} style={styles.themeBtn}>
+            <Text style={{ fontSize: 20 }}>{isDarkMode ? '☀️' : '🌙'}</Text>
+          </TouchableOpacity>
+          
+         <TouchableOpacity style={logoutBtnStyle} onPress={handleLogout}>
+          <Text style={[styles.logoutText, { color: isDarkMode ? '#ff6b6b' : '#E74C3C' }]}>Logout</Text>
         </TouchableOpacity>
+        </View>
       </View>
 
       {loading ? (
         <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color="#FFCB05" />
+          <ActivityIndicator size="large" color={theme.secondary} />
           <Text style={styles.loadingText}>Loading Pokédex...</Text>
         </View>
       ) : (
         <FlatList
           data={pokemons}
-          keyExtractor={(item) => item.name}
+          keyExtractor={(item, index) => `${item.name}-${index}`}
           renderItem={renderPokemonItem}
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={renderEmptyComponent}
           
-          // --- PROPS SAKTI UNTUK INFINITE SCROLL ---
+        
           onEndReached={fetchMorePokemons} // Fungsi yang dipanggil saat scroll ke bawah
           onEndReachedThreshold={0.5} // Trigger API saat scroll tersisa 50% dari bawah
           ListFooterComponent={renderFooter} // Tampilkan muter-muter di paling bawah
@@ -154,8 +179,8 @@ export default function HomeScreen({ navigation }: any) {
             <RefreshControl 
               refreshing={refreshing} 
               onRefresh={onRefresh} 
-              colors={['#FFCB05']} 
-              tintColor={'#FFCB05'} 
+             colors={[theme.primary]}
+            tintColor={theme.primary}
             />
           }
         />
@@ -181,5 +206,6 @@ const styles = StyleSheet.create({
   loadingText: { marginTop: 10, fontSize: 16, color: '#2C3E50', fontWeight: '600' },
   emptyContainer: { alignItems: 'center', justifyContent: 'center', paddingTop: 50 },
   emptyText: { fontSize: 16, color: '#7F8C8D', textAlign: 'center' },
-  footerLoader: { paddingVertical: 20, alignItems: 'center' }, // Style buat loader bawah
+  footerLoader: { paddingVertical: 20, alignItems: 'center' }, 
+  themeBtn: { marginRight: 15, padding: 5 },
 });
